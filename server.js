@@ -1,30 +1,31 @@
-const express = require("express");
-const fs = require("fs");
-
+const express = require('express');
+const fs = require('fs');
 const app = express();
 
-// Read JSON file
-const docsData = JSON.parse(
-  fs.readFileSync("docs.json", "utf-8")
-);
+const PORT = process.env.PORT || 5000;
 
-// API endpoint
-app.get("/api/docs", (req, res) => {
-  res.json(docsData);
+// Parse JSON
+app.use(express.json());
+
+// Load your JSON file
+const docs = JSON.parse(fs.readFileSync('docs.json'));
+
+// Route to get all docs
+app.get('/api/docs', (req, res) => {
+  res.json(docs);
 });
 
-// Single topic
-app.get("/api/docs/:topic", (req, res) => {
-  const topic = req.params.topic;
-  const data = docsData.topics[topic];
-
-  if (!data) {
-    return res.status(404).json({ error: "Topic not found" });
+// Route to get topic by name
+app.get('/api/docs/:topic', (req, res) => {
+  const topic = req.params.topic.toLowerCase();
+  if (docs.topics[topic]) {
+    res.json(docs.topics[topic]);
+  } else {
+    res.status(404).json({ error: 'Topic not found' });
   }
-
-  res.json(data);
 });
 
-app.listen(5000, () => {
-  console.log("API running at http://localhost:5000/api/docs");
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
