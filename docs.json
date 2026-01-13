@@ -1,0 +1,171 @@
+{
+  "project": "Backend Revision Notes API",
+  "about": "These notes are written in simple human language to quickly recall backend syntax during exams or interviews.",
+  "topics": {
+
+    "express": {
+      "topicName": "Express.js",
+      "whatIsIt": "Express is a Node.js framework used to create web servers and APIs easily.",
+      "importantSyntax": {
+        "basicServer": [
+          "const express = require('express');",
+          "const app = express();",
+          "",
+          "app.get('/', (req, res) => {",
+          "  res.send('Hello World');",
+          "});",
+          "",
+          "app.listen(5000, () => {",
+          "  console.log('Server started on port 5000');",
+          "});"
+        ],
+        "middleware": [
+          "app.use(express.json());",
+          "app.use(express.urlencoded({ extended: true }));"
+        ]
+      },
+      "rememberThis": "Express works on request and response objects."
+    },
+
+    "session": {
+      "topicName": "Express Session",
+      "whatIsIt": "Session is used to store user data on the server so that the user stays logged in.",
+      "importantSyntax": {
+        "sessionSetup": [
+          "const session = require('express-session');",
+          "",
+          "app.use(",
+          "  session({",
+          "    secret: 'mySessionSecret',",
+          "    resave: false,",
+          "    saveUninitialized: true",
+          "  })",
+          ");"
+        ],
+        "storeValue": [
+          "req.session.userId = user._id;"
+        ],
+        "destroySession": [
+          "req.session.destroy();"
+        ]
+      },
+      "rememberThis": "Session data is stored on the server, not in the browser."
+    },
+
+    "jwt": {
+      "topicName": "JWT (JSON Web Token)",
+      "whatIsIt": "JWT is used for authentication where no session is stored on the server.",
+      "importantSyntax": {
+        "createToken": [
+          "const jwt = require('jsonwebtoken');",
+          "",
+          "const token = jwt.sign(",
+          "  { id: user._id },",
+          "  'jwtSecretKey',",
+          "  { expiresIn: '1h' }",
+          ");"
+        ],
+        "verifyToken": [
+          "jwt.verify(token, 'jwtSecretKey', (err, decoded) => {",
+          "  if (err) {",
+          "    return res.status(401).json({ message: 'Invalid token' });",
+          "  }",
+          "  req.user = decoded;",
+          "  next();",
+          "});"
+        ]
+      },
+      "rememberThis": "JWT is stateless and mostly stored in headers."
+    },
+
+    "multer": {
+      "topicName": "Multer",
+      "whatIsIt": "Multer is used to upload files like images or documents in Express.",
+      "importantSyntax": {
+        "storage": [
+          "const multer = require('multer');",
+          "",
+          "const storage = multer.diskStorage({",
+          "  destination: (req, file, cb) => {",
+          "    cb(null, 'uploads/');",
+          "  },",
+          "  filename: (req, file, cb) => {",
+          "    cb(null, Date.now() + '-' + file.originalname);",
+          "  }",
+          "});"
+        ],
+        "upload": [
+          "const upload = multer({ storage: storage });"
+        ],
+        "routeUsage": [
+          "app.post('/upload', upload.single('image'), (req, res) => {",
+          "  res.send('File uploaded successfully');",
+          "});"
+        ]
+      },
+      "rememberThis": "Multer handles multipart/form-data."
+    },
+
+    "mongoose": {
+      "topicName": "Mongoose",
+      "whatIsIt": "Mongoose is used to connect Node.js with MongoDB using schemas and models.",
+      "importantSyntax": {
+        "connection": [
+          "const mongoose = require('mongoose');",
+          "",
+          "mongoose.connect('mongodb://127.0.0.1:27017/myDatabase');"
+        ],
+        "schema": [
+          "const userSchema = new mongoose.Schema({",
+          "  name: String,",
+          "  email: String,",
+          "  password: String",
+          "});"
+        ],
+        "model": [
+          "const User = mongoose.model('User', userSchema);"
+        ],
+        "crudExamples": {
+          "create": [
+            "const user = new User({ name, email, password });",
+            "user.save();"
+          ],
+          "read": [
+            "User.find();",
+            "User.findOne({ email: email });"
+          ],
+          "update": [
+            "User.updateOne({ _id: id }, { name: 'Updated Name' });"
+          ],
+          "delete": [
+            "User.deleteOne({ _id: id });"
+          ]
+        }
+      },
+      "rememberThis": "Schema defines structure, model interacts with database."
+    },
+
+    "mongodb": {
+      "topicName": "MongoDB",
+      "whatIsIt": "MongoDB is a NoSQL database that stores data in documents.",
+      "basicStructure": [
+        "Database",
+        "Collection",
+        "Document"
+      ],
+      "exampleDocument": {
+        "name": "Ayush",
+        "email": "ayush@gmail.com"
+      },
+      "importantCommands": {
+        "showDatabases": "show dbs",
+        "selectDatabase": "use myDatabase",
+        "findData": "db.users.find()",
+        "insertData": "db.users.insertOne({ name: 'A', age: 20 })",
+        "deleteData": "db.users.deleteOne({ name: 'A' })"
+      },
+      "rememberThis": "MongoDB does not use tables like SQL."
+    }
+
+  }
+}
